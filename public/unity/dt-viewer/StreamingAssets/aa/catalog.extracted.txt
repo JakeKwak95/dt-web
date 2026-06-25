@@ -1,0 +1,202 @@
+shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+	ResourceType: UnityEngine.ResourceManagement.ResourceProviders.IAssetBundleResource
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+	InternalId: {UnityEngine.AddressableAssets.Addressables.RuntimePath}/WebGL/shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+	Data: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleRequestOptions
+	DependencyHash: -1
+Buildings/R
+	ResourceType: UnityEngine.GameObject
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_AddressableAssets/Buildings/Catholic_KJH.prefab
+	Data: 
+	DependencyHash: 1915
+	Dependencies:
+		level_a_assets_all_2e64509d48cb539927108398f224f649.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+e843206038291b34aa9f46837e4e81dd -> Buildings/R
+Buildings/P
+	ResourceType: UnityEngine.GameObject
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_AddressableAssets/Buildings/Catholic_Paul_NJH.prefab
+	Data: 
+	DependencyHash: 2315
+	Dependencies:
+		level_b_assets_all_237b12ea72f7174da3c18c3601730c4b.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+03d363b16a9b0a3489e1f662982e50a8 -> Buildings/P
+Buildings/T
+	ResourceType: UnityEngine.GameObject
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_AddressableAssets/Buildings/Catholic_Teresa_NJH.prefab
+	Data: 
+	DependencyHash: 2576
+	Dependencies:
+		level_c_assets_all_e6e6fb430ce09de915a959c398339f12.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+0c88f749ea4d59f4290d180d4aa243d3 -> Buildings/T
+InputActions
+	ResourceType: UnityEngine.InputSystem.InputActionAsset
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_AddressableAssets/InputAction.inputactions
+	Data: 
+	DependencyHash: 3108
+	Dependencies:
+		defaultlocalgroup_assets_all_d5eebf23cdc4b2ff4c62ab8543077975.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+		f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+InputActions
+	ResourceType: UnityEngine.InputSystem.InputActionReference
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_AddressableAssets/InputAction.inputactions
+	Data: 
+	DependencyHash: 3108
+	Dependencies:
+		defaultlocalgroup_assets_all_d5eebf23cdc4b2ff4c62ab8543077975.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+		f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+3c8b4cf9d4efaeb46beb5f6d9fbb1392 -> InputActions
+3c8b4cf9d4efaeb46beb5f6d9fbb1392 -> InputActions
+M/Test
+	ResourceType: UnityEngine.Material
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_AddressableAssets/M_AD_Gray.mat
+	Data: 
+	DependencyHash: 3108
+	Dependencies:
+		defaultlocalgroup_assets_all_d5eebf23cdc4b2ff4c62ab8543077975.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+		f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+08e30f1617f5424459ab25e24fd00593 -> M/Test
+Buildings/Stellar
+	ResourceType: UnityEngine.GameObject
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_DEV/99_Test/TempAssets/Catholic_Stellar.prefab
+	Data: 
+	DependencyHash: 3647
+	Dependencies:
+		stellar_assets_all_4f60a5f04261121d868adfaf84b116dc.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+		f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+5bcd2c6140377414a82a010b84dd67b7 -> Buildings/Stellar
+Assets/_DEV/99_Test/TempAssets/SM_bed.prefab
+	ResourceType: UnityEngine.GameObject
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_DEV/99_Test/TempAssets/SM_bed.prefab
+	Data: 
+	DependencyHash: 3986
+	Dependencies:
+		savableobjects_assets_all_626298257a2fab16e5003646a2d28386.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+		f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+351abda140a6e6942b29bfa2211aa015 -> Assets/_DEV/99_Test/TempAssets/SM_bed.prefab
+Assets/_DEV/99_Test/TempAssets/SM_bed_2.prefab
+	ResourceType: UnityEngine.GameObject
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_DEV/99_Test/TempAssets/SM_bed_2.prefab
+	Data: 
+	DependencyHash: 3986
+	Dependencies:
+		savableobjects_assets_all_626298257a2fab16e5003646a2d28386.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+		f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+867c28a80459acc4aa59825320aaee7c -> Assets/_DEV/99_Test/TempAssets/SM_bed_2.prefab
+Assets/_DEV/99_Test/TempAssets/SM_bed_3.prefab
+	ResourceType: UnityEngine.GameObject
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_DEV/99_Test/TempAssets/SM_bed_3.prefab
+	Data: 
+	DependencyHash: 3986
+	Dependencies:
+		savableobjects_assets_all_626298257a2fab16e5003646a2d28386.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+		f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+81cccb8b742944045952e4658291e2e3 -> Assets/_DEV/99_Test/TempAssets/SM_bed_3.prefab
+Assets/_DEV/99_Test/TempAssets/SM_chair.prefab
+	ResourceType: UnityEngine.GameObject
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Assets/_DEV/99_Test/TempAssets/SM_chair.prefab
+	Data: 
+	DependencyHash: 3986
+	Dependencies:
+		savableobjects_assets_all_626298257a2fab16e5003646a2d28386.bundle
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+		f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+1e8658c73e428eb468810475da5e3fcc -> Assets/_DEV/99_Test/TempAssets/SM_chair.prefab
+defaultlocalgroup_assets_all_d5eebf23cdc4b2ff4c62ab8543077975.bundle
+	ResourceType: UnityEngine.ResourceManagement.ResourceProviders.IAssetBundleResource
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+	InternalId: https://c54f3318-a4f0-4ca6-89d4-29dd6f314d51.client-api.unity3dusercontent.com/client_api/v1/environments/production/buckets/c99a08b5-2b04-4fef-8cd5-407927fe7fbd/release_by_badge/latest/entry_by_path/content/?path=/defaultlocalgroup_assets_all_d5eebf23cdc4b2ff4c62ab8543077975.bundle
+	Data: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleRequestOptions
+	DependencyHash: -1
+f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+	ResourceType: UnityEngine.ResourceManagement.ResourceProviders.IAssetBundleResource
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+	InternalId: https://c54f3318-a4f0-4ca6-89d4-29dd6f314d51.client-api.unity3dusercontent.com/client_api/v1/environments/production/buckets/c99a08b5-2b04-4fef-8cd5-407927fe7fbd/release_by_badge/latest/entry_by_path/content/?path=/f20160c010fc5b37818d7b74a613f4c2_monoscripts_e8953726c962f6a656c0e0c25e4efcf3.bundle
+	Data: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleRequestOptions
+	DependencyHash: -1
+level_a_assets_all_2e64509d48cb539927108398f224f649.bundle
+	ResourceType: UnityEngine.ResourceManagement.ResourceProviders.IAssetBundleResource
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+	InternalId: https://c54f3318-a4f0-4ca6-89d4-29dd6f314d51.client-api.unity3dusercontent.com/client_api/v1/environments/production/buckets/c99a08b5-2b04-4fef-8cd5-407927fe7fbd/release_by_badge/latest/entry_by_path/content/?path=/level_a_assets_all_2e64509d48cb539927108398f224f649.bundle
+	Data: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleRequestOptions
+	DependencyHash: -1
+level_b_assets_all_237b12ea72f7174da3c18c3601730c4b.bundle
+	ResourceType: UnityEngine.ResourceManagement.ResourceProviders.IAssetBundleResource
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+	InternalId: https://c54f3318-a4f0-4ca6-89d4-29dd6f314d51.client-api.unity3dusercontent.com/client_api/v1/environments/production/buckets/c99a08b5-2b04-4fef-8cd5-407927fe7fbd/release_by_badge/latest/entry_by_path/content/?path=/level_b_assets_all_237b12ea72f7174da3c18c3601730c4b.bundle
+	Data: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleRequestOptions
+	DependencyHash: -1
+level_c_assets_all_e6e6fb430ce09de915a959c398339f12.bundle
+	ResourceType: UnityEngine.ResourceManagement.ResourceProviders.IAssetBundleResource
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+	InternalId: https://c54f3318-a4f0-4ca6-89d4-29dd6f314d51.client-api.unity3dusercontent.com/client_api/v1/environments/production/buckets/c99a08b5-2b04-4fef-8cd5-407927fe7fbd/release_by_badge/latest/entry_by_path/content/?path=/level_c_assets_all_e6e6fb430ce09de915a959c398339f12.bundle
+	Data: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleRequestOptions
+	DependencyHash: -1
+savableobjects_assets_all_626298257a2fab16e5003646a2d28386.bundle
+	ResourceType: UnityEngine.ResourceManagement.ResourceProviders.IAssetBundleResource
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+	InternalId: https://c54f3318-a4f0-4ca6-89d4-29dd6f314d51.client-api.unity3dusercontent.com/client_api/v1/environments/production/buckets/c99a08b5-2b04-4fef-8cd5-407927fe7fbd/release_by_badge/latest/entry_by_path/content/?path=/savableobjects_assets_all_626298257a2fab16e5003646a2d28386.bundle
+	Data: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleRequestOptions
+	DependencyHash: -1
+stellar_assets_all_4f60a5f04261121d868adfaf84b116dc.bundle
+	ResourceType: UnityEngine.ResourceManagement.ResourceProviders.IAssetBundleResource
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleProvider
+	InternalId: https://c54f3318-a4f0-4ca6-89d4-29dd6f314d51.client-api.unity3dusercontent.com/client_api/v1/environments/production/buckets/c99a08b5-2b04-4fef-8cd5-407927fe7fbd/release_by_badge/latest/entry_by_path/content/?path=/stellar_assets_all_4f60a5f04261121d868adfaf84b116dc.bundle
+	Data: UnityEngine.ResourceManagement.ResourceProviders.AssetBundleRequestOptions
+	DependencyHash: -1
+Packages/com.unity.render-pipelines.core/Runtime/RenderPipelineResources/FallbackShader.shader
+	ResourceType: UnityEngine.Shader
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Packages/com.unity.render-pipelines.core/Runtime/RenderPipelineResources/FallbackShader.shader
+	Data: 
+	DependencyHash: 4220
+	Dependencies:
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+36e335017ad71d54fbb10842863188ae -> Packages/com.unity.render-pipelines.core/Runtime/RenderPipelineResources/FallbackShader.shader
+Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat
+	ResourceType: UnityEngine.Material
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat
+	Data: 
+	DependencyHash: 4220
+	Dependencies:
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+31321ba15b8f8eb4c954353edc038b1d -> Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat
+Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader
+	ResourceType: UnityEngine.Shader
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader
+	Data: 
+	DependencyHash: 4220
+	Dependencies:
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+933532a4fcc9baf4fa0491de14d08ed7 -> Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader
+Packages/com.unity.render-pipelines.universal/Shaders/Utils/FallbackError.shader
+	ResourceType: UnityEngine.Shader
+	ProviderId: UnityEngine.ResourceManagement.ResourceProviders.BundledAssetProvider
+	InternalId: Packages/com.unity.render-pipelines.universal/Shaders/Utils/FallbackError.shader
+	Data: 
+	DependencyHash: 4220
+	Dependencies:
+		shared_dependencies_assets_all_297df37e859df224fbbb1e2abfa6207c.bundle
+e6e9a19c3678ded42a3bc431ebef7dbd -> Packages/com.unity.render-pipelines.universal/Shaders/Utils/FallbackError.shader

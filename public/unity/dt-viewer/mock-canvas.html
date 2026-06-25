@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unity WebGL Canvas Mock</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #17191f;
+      color: #f4f6fb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(320px, 380px) 1fr;
+      background: #17191f;
+    }
+
+    aside {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 16px;
+      border-right: 1px solid #343949;
+      background: #20242f;
+      min-height: 100vh;
+    }
+
+    main {
+      min-width: 0;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: #101217;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: #c8d0e1;
+      font-size: 13px;
+    }
+
+    input, textarea, button {
+      font: inherit;
+      border-radius: 6px;
+      border: 1px solid #50586c;
+      background: #151923;
+      color: #f4f6fb;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 9px 10px;
+    }
+
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    button {
+      padding: 9px 11px;
+      background: #2f6fed;
+      border-color: #4f86ff;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #303647;
+      border-color: #596175;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+    }
+
+    .row {
+      display: grid;
+      grid-auto-flow: row;
+      gap: 8px;
+    }
+
+    #unity-wrap {
+      width: min(100%, 1180px);
+      aspect-ratio: 16 / 10;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    #unity-canvas {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      outline: none;
+    }
+
+    #status {
+      color: #aeb8ce;
+      font-size: 13px;
+      min-height: 18px;
+    }
+
+    #log {
+      flex: 1;
+      min-height: 180px;
+      overflow: auto;
+      margin: 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #343949;
+      background: #11141b;
+      color: #d8deec;
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        min-height: auto;
+        border-right: 0;
+        border-bottom: 1px solid #343949;
+      }
+
+      main {
+        min-height: 56vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <h1>Unity WebGL Canvas Mock</h1>
+    <div id="status">Loading Unity...</div>
+
+    <div class="row">
+      <button id="All" disabled>All</button>
+      <button id="B2F" disabled>B2F</button>
+      <button id="B1F" disabled>B1F</button>
+      <button id="1F" disabled>1F</button>
+      <button id="2F" disabled>2F</button>
+      <button id="5F" disabled>5F</button>
+    </div>
+
+    <button id="clearButton" class="secondary">Clear Log</button>
+    <pre id="log"></pre>
+  </aside>
+
+  <main>
+    <div id="unity-wrap">
+      <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+    </div>
+  </main>
+
+  <script>
+    const UNITY_GAME_OBJECT = "BuildingLoader";
+    const UNITY_METHOD = "LoadBuilding";
+    const BUILD_URL = "Build";
+
+    const floorButtons = [
+      { id: "All", value: "All" },
+      { id: "B2F", value: "B2F" },
+      { id: "B1F", value: "B1F" },
+      { id: "1F", value: "1F" },
+      { id: "2F", value: "2F" },
+      { id: "5F", value: "5F" }
+    ];
+
+    const elements = {
+      canvas: document.querySelector("#unity-canvas"),
+      status: document.querySelector("#status"),
+      log: document.querySelector("#log"),
+      clearButton: document.querySelector("#clearButton"),
+      floorButtons: floorButtons.map(({ id, value }) => ({
+        value,
+        element: document.getElementById(id)
+      }))
+    };
+
+    let unityInstance = null;
+
+    function log(message) {
+      const timestamp = new Date().toLocaleTimeString();
+      elements.log.textContent += `[${timestamp}] ${message}\n`;
+      elements.log.scrollTop = elements.log.scrollHeight;
+    }
+
+    function setStatus(message) {
+      elements.status.textContent = message;
+      log(message);
+    }
+
+    function setButtonsEnabled(enabled) {
+      elements.floorButtons.forEach(({ element }) => {
+        element.disabled = !enabled;
+      });
+    }
+
+    function sendFloorToUnity(floor) {
+      if (!unityInstance) {
+        setStatus("Unity is not ready yet.");
+        return;
+      }
+
+      unityInstance.SendMessage(UNITY_GAME_OBJECT, UNITY_METHOD, floor);
+      log(`Web -> Unity: ${UNITY_GAME_OBJECT}.${UNITY_METHOD}(${JSON.stringify(floor)})`);
+    }
+
+    function receiveFromUnity(message) {
+      log(`Unity -> Web: ${message}`);
+    }
+
+    window.receiveFromUnity = receiveFromUnity;
+    window.UnityWebBridge = { receive: receiveFromUnity };
+
+    window.addEventListener("message", (event) => {
+      const data = event.data;
+      if (!data || data.source !== "unity-webgl") return;
+      receiveFromUnity(typeof data.payload === "string" ? data.payload : JSON.stringify(data.payload));
+    });
+
+    elements.floorButtons.forEach(({ element, value }) => {
+      element.addEventListener("click", () => sendFloorToUnity(value));
+    });
+    elements.clearButton.addEventListener("click", () => {
+      elements.log.textContent = "";
+    });
+
+    const cacheBust = Date.now();
+    const buildFile = (fileName) => `${BUILD_URL}/${fileName}?v=${cacheBust}`;
+    const scriptUrl = buildFile("Build.loader.js");
+
+    const config = {
+      arguments: [],
+      dataUrl: buildFile("Build.data"),
+      frameworkUrl: buildFile("Build.framework.js"),
+      codeUrl: buildFile("Build.wasm"),
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "DefaultCompany",
+      productName: "DT_CatholicHospital",
+      productVersion: `0.1.0-${cacheBust}`,
+      showBanner: (message, type) => log(`${type || "info"}: ${message}`),
+      errorHandler: (error, url, line) => {
+        log(`Unity error: ${error}${url ? ` (${url}:${line || 0})` : ""}`);
+        return false;
+      },
+      print: (message) => log(`Unity: ${message}`),
+      printErr: (message) => log(`Unity error: ${message}`)
+    };
+
+    const script = document.createElement("script");
+    script.src = scriptUrl;
+    setStatus("Loading Unity loader...");
+    script.onload = () => {
+      if (typeof createUnityInstance !== "function") {
+        setStatus("Unity loader loaded, but createUnityInstance is missing.");
+        return;
+      }
+
+      setStatus("Starting Unity runtime...");
+
+      createUnityInstance(elements.canvas, config).then((instance) => {
+        unityInstance = instance;
+        window.unityInstance = instance;
+        setButtonsEnabled(true);
+        setStatus("Unity loaded. Ready to send messages.");
+      }).catch((error) => {
+        setStatus(`Unity failed to load: ${error}`);
+      });
+    };
+    script.onerror = () => setStatus("Could not load Build/Build.loader.js.");
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>
