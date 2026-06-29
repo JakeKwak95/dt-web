@@ -1,8 +1,8 @@
+import { useState } from 'react'
 import { Link, useRouter, useRouterState } from '@tanstack/react-router'
 import {
   Activity,
   Bell,
-  Building2,
   Map,
   Search,
   Settings,
@@ -10,6 +10,8 @@ import {
 } from 'lucide-react'
 import { authClient } from '#/lib/auth-client'
 import ThemeToggle from '../ThemeToggle'
+
+const SIDEBAR_HIDDEN_KEY = 'app-sidebar-hidden'
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', shortLabel: 'Dash', icon: Activity },
@@ -28,6 +30,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     select: (state) => state.location.pathname,
   })
   const { data: session, isPending } = authClient.useSession()
+  const [sidebarHidden, setSidebarHidden] = useState(
+    () => typeof window !== 'undefined' && localStorage.getItem(SIDEBAR_HIDDEN_KEY) === 'true',
+  )
 
   if (pathname === '/login' || pathname === '/register') {
     return <>{children}</>
@@ -35,18 +40,32 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   const userInitial = session?.user.name.charAt(0).toUpperCase() || 'U'
 
+  const setSidebarHiddenPersisted = (next: boolean) => {
+    setSidebarHidden(next)
+    localStorage.setItem(SIDEBAR_HIDDEN_KEY, String(next))
+  }
+
+  const handleNavClick = (item: (typeof navItems)[number]) => (event: React.MouseEvent) => {
+    if (pathname === item.to) {
+      event.preventDefault()
+      setSidebarHiddenPersisted(!sidebarHidden)
+    } else if (sidebarHidden) {
+      setSidebarHiddenPersisted(false)
+    }
+  }
+
   return (
-    <div className="app-shell">
+    <div className={sidebarHidden ? 'app-shell sidebar-hidden' : 'app-shell'}>
       <aside className="app-sidebar">
-        <Link to="/dashboard" className="brand-mark">
-          <span className="brand-icon">
-            <Building2 size={20} strokeWidth={2.2} />
-          </span>
-          <span>
-            <span className="brand-title">DT Control</span>
-            <span className="brand-subtitle">Digital twin console</span>
-          </span>
-        </Link>
+        <div className="sidebar-header">
+          <Link to="/dashboard" className="brand-mark">
+            <img
+              src="/logo.png"
+              alt="Daegu Catholic University Medical Center"
+              className="brand-logo"
+            />
+          </Link>
+        </div>
 
         <nav className="sidebar-nav" aria-label="Main navigation">
           {navItems.map((item) => {
@@ -58,6 +77,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 activeOptions={{ exact: item.exact }}
                 className="sidebar-link"
                 activeProps={{ className: 'sidebar-link is-active' }}
+                aria-label={item.label}
+                title={item.label}
+                onClick={handleNavClick(item)}
               >
                 <Icon size={18} />
                 <span>{item.label}</span>
@@ -78,8 +100,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <div className="app-main">
         <header className="topbar">
           <div>
-            <p className="eyebrow">Hospital Digital Twin</p>
-            <h1>Operations Workspace</h1>
+            <p className="eyebrow"></p>
+            <h1></h1>
           </div>
 
           <div className="topbar-actions">

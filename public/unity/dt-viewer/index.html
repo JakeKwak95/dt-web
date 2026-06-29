@@ -21,6 +21,8 @@
     <script>
       var UNITY_GAME_OBJECT = "BuildingLoader";
       var UNITY_METHOD = "LoadBuilding";
+      var SCENE_GAME_OBJECT = "SceneChangeManager";
+      var SCENE_METHOD = "ChangeScene";
 
       var canvas = document.querySelector("#unity-canvas");
 
@@ -124,6 +126,10 @@
 
         if (data.type === "loadBuilding" && window.unityInstance) {
           window.unityInstance.SendMessage(UNITY_GAME_OBJECT, UNITY_METHOD, data.floor);
+        }
+
+        if (data.type === "changeScene" && window.unityInstance) {
+          window.unityInstance.SendMessage(SCENE_GAME_OBJECT, SCENE_METHOD, data.scene);
         }
       });
 
