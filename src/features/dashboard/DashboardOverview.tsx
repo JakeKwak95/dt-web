@@ -1,12 +1,15 @@
+import { useState } from 'react'
 import {
   AlertTriangle,
   ArrowUpRight,
   Building2,
   CircleDot,
   Database,
+  RefreshCw,
   Server,
   Wifi,
 } from 'lucide-react'
+import { clearUnityAssetCache } from '#/lib/unityCache'
 
 const metrics = [
   { label: 'Active sites', value: '1', detail: 'Main hospital campus' },
@@ -33,7 +36,18 @@ const events = [
   },
 ]
 
+type CacheStatus = 'idle' | 'clearing' | 'done'
+
 export default function DashboardOverview() {
+  const [cacheStatus, setCacheStatus] = useState<CacheStatus>('idle')
+
+  async function handleClearCache() {
+    setCacheStatus('clearing')
+    await clearUnityAssetCache()
+    setCacheStatus('done')
+    setTimeout(() => setCacheStatus('idle'), 3000)
+  }
+
   return (
     <div className="page-stack">
       <section className="hero-panel">
@@ -53,6 +67,19 @@ export default function DashboardOverview() {
           <a className="secondary-action" href="/settings">
             Configure
           </a>
+          <button
+            type="button"
+            className="secondary-action"
+            onClick={handleClearCache}
+            disabled={cacheStatus === 'clearing'}
+          >
+            <RefreshCw size={16} />
+            {cacheStatus === 'clearing'
+              ? 'Clearing…'
+              : cacheStatus === 'done'
+                ? 'Cache cleared'
+                : 'Clear viewer cache'}
+          </button>
         </div>
       </section>
 

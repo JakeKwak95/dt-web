@@ -25,6 +25,7 @@ import { Route as ApiUnitySaveObjectDotdoRouteImport } from './routes/api/unity/
 import { Route as ApiUnityLoadObjectsDotdoRouteImport } from './routes/api/unity/loadObjects[.]do'
 import { Route as ApiUnityLoadObjectDotdoRouteImport } from './routes/api/unity/loadObject[.]do'
 import { Route as ApiUnityDeleteObjectDotdoRouteImport } from './routes/api/unity/deleteObject[.]do'
+import { Route as ApiUnityAssetCatalogDotdoRouteImport } from './routes/api/unity/assetCatalog[.]do'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const SettingsRoute = SettingsRouteImport.update({
@@ -109,6 +110,12 @@ const ApiUnityDeleteObjectDotdoRoute =
     path: '/api/unity/deleteObject.do',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiUnityAssetCatalogDotdoRoute =
+  ApiUnityAssetCatalogDotdoRouteImport.update({
+    id: '/api/unity/assetCatalog.do',
+    path: '/api/unity/assetCatalog.do',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -127,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/unity/assetCatalog.do': typeof ApiUnityAssetCatalogDotdoRoute
   '/api/unity/deleteObject.do': typeof ApiUnityDeleteObjectDotdoRoute
   '/api/unity/loadObject.do': typeof ApiUnityLoadObjectDotdoRoute
   '/api/unity/loadObjects.do': typeof ApiUnityLoadObjectsDotdoRoute
@@ -146,6 +154,7 @@ export interface FileRoutesByTo {
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/unity/assetCatalog.do': typeof ApiUnityAssetCatalogDotdoRoute
   '/api/unity/deleteObject.do': typeof ApiUnityDeleteObjectDotdoRoute
   '/api/unity/loadObject.do': typeof ApiUnityLoadObjectDotdoRoute
   '/api/unity/loadObjects.do': typeof ApiUnityLoadObjectsDotdoRoute
@@ -166,6 +175,7 @@ export interface FileRoutesById {
   '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/unity/assetCatalog.do': typeof ApiUnityAssetCatalogDotdoRoute
   '/api/unity/deleteObject.do': typeof ApiUnityDeleteObjectDotdoRoute
   '/api/unity/loadObject.do': typeof ApiUnityLoadObjectDotdoRoute
   '/api/unity/loadObjects.do': typeof ApiUnityLoadObjectsDotdoRoute
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/demo/drizzle'
     | '/demo/tanstack-query'
     | '/api/auth/$'
+    | '/api/unity/assetCatalog.do'
     | '/api/unity/deleteObject.do'
     | '/api/unity/loadObject.do'
     | '/api/unity/loadObjects.do'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/demo/drizzle'
     | '/demo/tanstack-query'
     | '/api/auth/$'
+    | '/api/unity/assetCatalog.do'
     | '/api/unity/deleteObject.do'
     | '/api/unity/loadObject.do'
     | '/api/unity/loadObjects.do'
@@ -225,6 +237,7 @@ export interface FileRouteTypes {
     | '/demo/drizzle'
     | '/demo/tanstack-query'
     | '/api/auth/$'
+    | '/api/unity/assetCatalog.do'
     | '/api/unity/deleteObject.do'
     | '/api/unity/loadObject.do'
     | '/api/unity/loadObjects.do'
@@ -245,6 +258,7 @@ export interface RootRouteChildren {
   DemoDrizzleRoute: typeof DemoDrizzleRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiUnityAssetCatalogDotdoRoute: typeof ApiUnityAssetCatalogDotdoRoute
   ApiUnityDeleteObjectDotdoRoute: typeof ApiUnityDeleteObjectDotdoRoute
   ApiUnityLoadObjectDotdoRoute: typeof ApiUnityLoadObjectDotdoRoute
   ApiUnityLoadObjectsDotdoRoute: typeof ApiUnityLoadObjectsDotdoRoute
@@ -367,6 +381,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiUnityDeleteObjectDotdoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/unity/assetCatalog.do': {
+      id: '/api/unity/assetCatalog.do'
+      path: '/api/unity/assetCatalog.do'
+      fullPath: '/api/unity/assetCatalog.do'
+      preLoaderRoute: typeof ApiUnityAssetCatalogDotdoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -389,6 +410,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoDrizzleRoute: DemoDrizzleRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiUnityAssetCatalogDotdoRoute: ApiUnityAssetCatalogDotdoRoute,
   ApiUnityDeleteObjectDotdoRoute: ApiUnityDeleteObjectDotdoRoute,
   ApiUnityLoadObjectDotdoRoute: ApiUnityLoadObjectDotdoRoute,
   ApiUnityLoadObjectsDotdoRoute: ApiUnityLoadObjectsDotdoRoute,

@@ -8,6 +8,12 @@ import {
   timestamp,
 } from 'drizzle-orm/pg-core'
 
+export const studioAssetCatalog = pgTable('studio_asset_catalog', {
+  id: serial().primaryKey(),
+  name: text().notNull(),
+  objIndex: integer('obj_index').notNull().unique(),
+})
+
 export const unityObjects = pgTable('unity_objects', {
   id: serial().primaryKey(),
   category: text().notNull(),

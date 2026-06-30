@@ -21,7 +21,7 @@ export const Route = createFileRoute('/digital-twin')({
   component: DigitalTwinPage,
 })
 
-const FLOORS = ['All', 'B2F', 'B1F', '1F', '2F', '5F', '6F', '7F', '8F', '9F', '10F', '11F'] as const
+const FLOORS = ['All', 'B2F', 'B1F', '1F', '2F', '3F', '5F', '6F', '7F', '8F', '9F', '10F', '11F'] as const
 
 const categories = [
   { id: 'floors', label: 'Floors', icon: Building2 },
@@ -38,12 +38,39 @@ const scenes = [
   { id: 'StudioScene', label: 'Studio' },
 ] as const satisfies ReadonlyArray<{ id: SceneId; label: string }>
 
+interface PopupMessage {
+  id: number
+  text: string
+}
+
+interface StudioAsset {
+  id: number
+  name: string
+  objIndex: number
+}
+
 function DigitalTwinPage() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [unityReady, setUnityReady] = useState(false)
   const [selectedFloor, setSelectedFloor] = useState<string | null>(null)
   const [activeCategory, setActiveCategory] = useState<CategoryId | null>('floors')
   const [activeScene, setActiveScene] = useState<SceneId>('MainScene')
+  const [popups, setPopups] = useState<PopupMessage[]>([])
+  const popupCounter = useRef(0)
+  const [studioAssets, setStudioAssets] = useState<StudioAsset[]>([])
+  const [selectedObjIndex, setSelectedObjIndex] = useState<number | null>(null)
+  const [studioMode, setStudioModeState] = useState<0 | 1>(0)
+
+  useEffect(() => {
+    fetch('/api/unity/assetCatalog.do')
+      .then((response) => response.json())
+      .then((data) => setStudioAssets(data.rows ?? []))
+      .catch(() => {})
+  }, [])
+
+  function dismissPopup(id: number) {
+    setPopups((prev) => prev.filter((p) => p.id !== id))
+  }
 
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
@@ -53,9 +80,22 @@ function DigitalTwinPage() {
       if (data.type === 'ready') {
         setUnityReady(true)
       }
+
+      if (data.type === 'report' && typeof data.message === 'string') {
+        const id = ++popupCounter.current
+        setPopups((prev) => [...prev, { id, text: data.message }])
+        setTimeout(() => dismissPopup(id), 5000)
+      }
     }
 
     window.addEventListener('message', handleMessage)
+
+    // Unity only announces 'ready' once, right when it finishes booting. If this
+    // effect attaches after that (e.g. main thread busy hydrating), the message
+    // is lost forever and buttons stay disabled until a refresh re-races it. Ask
+    // the iframe to re-announce in case it already loaded before we were listening.
+    iframeRef.current?.contentWindow?.postMessage({ source: 'dt-host', type: 'checkReady' }, '*')
+
     return () => window.removeEventListener('message', handleMessage)
   }, [])
 
@@ -74,11 +114,45 @@ function DigitalTwinPage() {
 
     contentWindow.postMessage({ source: 'dt-host', type: 'changeScene', scene }, '*')
     setActiveScene(scene)
+
+    const defaultFloor = scene === 'MainScene' ? 'All' : '1F'
+    contentWindow.postMessage({ source: 'dt-host', type: 'loadBuilding', floor: defaultFloor }, '*')
+    setSelectedFloor(defaultFloor)
+    setSelectedObjIndex(null)
+    setStudioModeState(0)
+
     iframeRef.current?.contentDocument?.getElementById('unity-canvas')?.focus()
   }
 
   function selectCategory(id: CategoryId) {
     setActiveCategory((current) => (current === id ? null : id))
+  }
+
+  function spawnAsset(objIndex: number) {
+    const contentWindow = iframeRef.current?.contentWindow
+    if (!unityReady || !contentWindow) return
+
+    contentWindow.postMessage({ source: 'dt-host', type: 'spawnAsset', objIndex }, '*')
+    setSelectedObjIndex(objIndex)
+    setStudioModeState(0)
+    iframeRef.current?.contentDocument?.getElementById('unity-canvas')?.focus()
+  }
+
+  function setStudioMode(mode: 0 | 1) {
+    const contentWindow = iframeRef.current?.contentWindow
+    if (!unityReady || !contentWindow) return
+
+    contentWindow.postMessage({ source: 'dt-host', type: 'setMode', mode }, '*')
+    setStudioModeState(mode)
+    iframeRef.current?.contentDocument?.getElementById('unity-canvas')?.focus()
+  }
+
+  function sendSave() {
+    const contentWindow = iframeRef.current?.contentWindow
+    if (!unityReady || !contentWindow) return
+
+    contentWindow.postMessage({ source: 'dt-host', type: 'save' }, '*')
+    iframeRef.current?.contentDocument?.getElementById('unity-canvas')?.focus()
   }
 
   const activeMeta = categories.find((category) => category.id === activeCategory)
@@ -102,6 +176,16 @@ function DigitalTwinPage() {
               {scene.label}
             </button>
           ))}
+          {activeScene === 'StudioScene' && (
+            <button
+              type="button"
+              className="twin-scene-button"
+              disabled={!unityReady}
+              onClick={sendSave}
+            >
+              Save
+            </button>
+          )}
         </div>
 
         <nav className="twin-rail" aria-label="Twin categories">
@@ -172,7 +256,60 @@ function DigitalTwinPage() {
               </>
             )}
 
-            {activeCategory === 'assets' && (
+            {activeCategory === 'assets' && activeScene === 'StudioScene' && (
+              <>
+                <div className="floor-buttons">
+                  <button
+                    type="button"
+                    className={studioMode === 0 ? 'primary-action' : 'secondary-action'}
+                    disabled={!unityReady}
+                    onClick={() => setStudioMode(0)}
+                  >
+                    Place
+                  </button>
+                  <button
+                    type="button"
+                    className={studioMode === 1 ? 'primary-action' : 'secondary-action'}
+                    disabled={!unityReady}
+                    onClick={() => setStudioMode(1)}
+                  >
+                    Select
+                  </button>
+                </div>
+                <div className="studio-asset-grid">
+                  {studioAssets.map((asset) => (
+                    <button
+                      key={asset.id}
+                      type="button"
+                      className={
+                        selectedObjIndex === asset.objIndex
+                          ? 'studio-asset-item is-selected'
+                          : 'studio-asset-item'
+                      }
+                      disabled={!unityReady}
+                      onClick={() => spawnAsset(asset.objIndex)}
+                    >
+                      <img
+                        className="studio-asset-thumb"
+                        src={`/assets/studio-icons/${asset.objIndex}.png`}
+                        alt={asset.name}
+                      />
+                      <span>{asset.name}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="hint-box">
+                  <MousePointer2 size={18} />
+                  <p>
+                    {studioMode === 0
+                      ? 'Click an asset to spawn it, then click in the scene to place it.'
+                      : 'Click a placed object in the scene to select it.'}
+                  </p>
+                </div>
+              </>
+            )}
+
+            {activeCategory === 'assets' && activeScene === 'MainScene' && (
               <>
                 <div className="info-list">
                   <InfoRow label="Object" value="No asset selected" />
@@ -225,6 +362,27 @@ function DigitalTwinPage() {
             allow="fullscreen; gamepad; clipboard-read; clipboard-write"
           />
         </div>
+
+        {popups.length > 0 && (
+          <div className="twin-popup-stack">
+            {popups.map((popup) => (
+              <div key={popup.id} className="twin-popup panel">
+                <div className="twin-popup-header">
+                  <span className="eyebrow">Unity Message</span>
+                  <button
+                    type="button"
+                    className="twin-popup-close"
+                    aria-label="Dismiss"
+                    onClick={() => dismissPopup(popup.id)}
+                  >
+                    ✕
+                  </button>
+                </div>
+                <p className="twin-popup-body">{popup.text}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   )

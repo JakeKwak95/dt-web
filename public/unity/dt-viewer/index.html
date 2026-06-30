@@ -23,6 +23,8 @@
       var UNITY_METHOD = "LoadBuilding";
       var SCENE_GAME_OBJECT = "SceneChangeManager";
       var SCENE_METHOD = "ChangeScene";
+      var STUDIO_GAME_OBJECT = "StudioManager";
+      var SAVE_GAME_OBJECT = "SaveLoadManager";
 
       var canvas = document.querySelector("#unity-canvas");
 
@@ -124,12 +126,28 @@
         var data = event.data;
         if (!data || data.source !== "dt-host") return;
 
+        if (data.type === "checkReady" && window.unityInstance) {
+          postToHost({ type: "ready" });
+        }
+
         if (data.type === "loadBuilding" && window.unityInstance) {
           window.unityInstance.SendMessage(UNITY_GAME_OBJECT, UNITY_METHOD, data.floor);
         }
 
         if (data.type === "changeScene" && window.unityInstance) {
           window.unityInstance.SendMessage(SCENE_GAME_OBJECT, SCENE_METHOD, data.scene);
+        }
+
+        if (data.type === "spawnAsset" && window.unityInstance) {
+          window.unityInstance.SendMessage(STUDIO_GAME_OBJECT, "SpawnAsset", data.objIndex);
+        }
+
+        if (data.type === "setMode" && window.unityInstance) {
+          window.unityInstance.SendMessage(STUDIO_GAME_OBJECT, "SetMode", String(data.mode));
+        }
+
+        if (data.type === "save" && window.unityInstance) {
+          window.unityInstance.SendMessage(SAVE_GAME_OBJECT, "Save");
         }
       });
 

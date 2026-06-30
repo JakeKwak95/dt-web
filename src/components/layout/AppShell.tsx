@@ -63,6 +63,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               src="/logo.png"
               alt="Daegu Catholic University Medical Center"
               className="brand-logo"
+              style={{ filter: `brightness(0.5) saturate(100%) invert(100%) hue-rotate(190deg)` }}
             />
           </Link>
         </div>

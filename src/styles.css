@@ -145,7 +145,7 @@ input {
 
 .brand-logo {
   width: 100%;
-  max-width: 180px;
+  max-width: 200px;
   height: auto;
   display: block;
 }
@@ -778,6 +778,68 @@ input {
   background: #000;
 }
 
+.twin-popup-stack {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  pointer-events: none;
+}
+
+.twin-popup {
+  width: 320px;
+  background: color-mix(in oklab, var(--surface) 75%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+  pointer-events: auto;
+  animation: popup-in 0.2s ease;
+}
+
+@keyframes popup-in {
+  from { opacity: 0; translate: 0 12px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+.twin-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.twin-popup-close {
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.twin-popup-close:hover {
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+
+.twin-popup-body {
+  padding: 10px 14px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .floor-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -815,6 +877,53 @@ input {
 .hint-box p {
   margin: 0;
   font-size: 13px;
+}
+
+.studio-asset-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.studio-asset-item {
+  display: grid;
+  overflow: hidden;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  cursor: pointer;
+  text-align: center;
+  padding: 0;
+}
+
+.studio-asset-item:hover {
+  border-color: var(--line-strong);
+}
+
+.studio-asset-item.is-selected {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.studio-asset-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: var(--surface);
+}
+
+.studio-asset-item span {
+  display: block;
+  padding: 6px 4px;
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.studio-asset-item.is-selected span {
+  color: var(--brand-strong);
 }
 
 .settings-grid {
