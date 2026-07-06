@@ -9,19 +9,18 @@ import {
   LogOut,
 } from 'lucide-react'
 import { authClient } from '#/lib/auth-client'
-import ThemeToggle from '../ThemeToggle'
 
 const SIDEBAR_HIDDEN_KEY = 'app-sidebar-hidden'
 
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard', shortLabel: 'Dash', icon: Activity },
+  { to: '/dashboard', label: '대시보드', shortLabel: 'Dash', icon: Activity },
   {
     to: '/digital-twin',
-    label: 'Digital Twin',
+    label: '디지털 트윈',
     shortLabel: 'Twin',
     icon: Map,
   },
-  { to: '/settings', label: 'Settings', shortLabel: 'Settings', icon: Settings },
+  { to: '/settings', label: '설정', shortLabel: 'Settings', icon: Settings },
 ] as const
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -134,7 +133,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <LogOut size={18} />
               </button>
             </div>
-            <ThemeToggle />
           </div>
         </header>
 

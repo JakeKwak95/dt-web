@@ -117,9 +117,15 @@
         window.parent.postMessage(Object.assign({ source: "unity-webgl" }, message), "*");
       }
 
+      window.postUnityMessageToHost = postToHost;
+
       // Unity (C#) calls window.receiveFromUnity(...) to push data back to the host page.
       window.receiveFromUnity = function (message) {
         postToHost({ type: "message", payload: message });
+      };
+
+      window.receiveNumberInput = function (value) {
+        postToHost({ type: "numberInput", value: Number(value) });
       };
 
       window.addEventListener("message", (event) => {
