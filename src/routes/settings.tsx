@@ -1,14 +1,6 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { getCurrentSession } from '#/lib/session'
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/settings')({
-  beforeLoad: async () => {
-    const session = await getCurrentSession()
-
-    if (!session?.user) {
-      throw redirect({ to: '/login' })
-    }
-  },
   component: SettingsPage,
 })
 

@@ -1,6 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { eq } from 'drizzle-orm'
 import { db } from '#/db/index'
-import { unityObjects } from '#/db/schema'
+import { unityObjectAuditLog, unityObjects } from '#/db/schema'
+import {
+  getAuditActor,
+  getAuditRequestMetadata,
+  getChangedUnityObjectFields,
+  toUnityObjectAuditState,
+} from '#/server/unity-object-audit'
 
 type UnityObjectInput = typeof unityObjects.$inferInsert
 
@@ -9,30 +16,65 @@ export const Route = createFileRoute('/api/unity/saveObject.do')({
     handlers: {
       POST: async ({ request }) => {
         try {
+          const actor = await getAuditActor(request)
           const form = await request.formData()
           const values = readUnityObjectForm(form)
+          const requestMetadata = getAuditRequestMetadata(request)
 
-          await db
-            .insert(unityObjects)
-            .values(values)
-            .onConflictDoUpdate({
-              target: unityObjects.id,
-              set: {
-                category: values.category,
-                buildingId: values.buildingId,
-                objIndex: values.objIndex,
-                posX: values.posX,
-                posY: values.posY,
-                posZ: values.posZ,
-                rotX: values.rotX,
-                rotY: values.rotY,
-                rotZ: values.rotZ,
-                scaleX: values.scaleX,
-                scaleY: values.scaleY,
-                scaleZ: values.scaleZ,
-                updatedAt: new Date(),
-              },
+          await db.transaction(async (tx) => {
+            const existingRows = await tx
+              .select()
+              .from(unityObjects)
+              .where(eq(unityObjects.id, values.id!))
+              .limit(1)
+            const existing = existingRows.at(0)
+
+            const savedRows = await tx
+              .insert(unityObjects)
+              .values(values)
+              .onConflictDoUpdate({
+                target: unityObjects.id,
+                set: {
+                  category: values.category,
+                  buildingId: values.buildingId,
+                  objIndex: values.objIndex,
+                  posX: values.posX,
+                  posY: values.posY,
+                  posZ: values.posZ,
+                  rotX: values.rotX,
+                  rotY: values.rotY,
+                  rotZ: values.rotZ,
+                  scaleX: values.scaleX,
+                  scaleY: values.scaleY,
+                  scaleZ: values.scaleZ,
+                  updatedAt: new Date(),
+                },
+              })
+              .returning()
+            const saved = savedRows.at(0)
+
+            if (!saved) throw new Error('Saved object was not returned')
+
+            const changedFields = getChangedUnityObjectFields(existing, saved)
+            if (changedFields.length === 0) return
+
+            await tx.insert(unityObjectAuditLog).values({
+              objectId: saved.id,
+              actorUserId: actor?.id ?? null,
+              actorName: actor?.name ?? null,
+              actorEmail: actor?.email ?? null,
+              action: existing ? 'update' : 'create',
+              buildingId: saved.buildingId,
+              objIndex: saved.objIndex,
+              beforeState: existing
+                ? toUnityObjectAuditState(existing)
+                : null,
+              afterState: toUnityObjectAuditState(saved),
+              changedFields,
+              source: 'unity-webgl',
+              ...requestMetadata,
             })
+          })
 
           return Response.json({
             result: 'success',

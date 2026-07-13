@@ -19,11 +19,7 @@
       <div id="unity-warning"> </div>
     </div>
     <script>
-      var UNITY_GAME_OBJECT = "BuildingLoader";
-      var UNITY_METHOD = "LoadBuilding";
-      var SCENE_GAME_OBJECT = "SceneChangeManager";
-      var SCENE_METHOD = "ChangeScene";
-      var STUDIO_GAME_OBJECT = "StudioManager";
+      var WEB_API_GAME_OBJECT = "WebAPIManager";
       var SAVE_GAME_OBJECT = "SaveLoadManager";
 
       var canvas = document.querySelector("#unity-canvas");
@@ -117,10 +113,40 @@
         window.parent.postMessage(Object.assign({ source: "unity-webgl" }, message), "*");
       }
 
-      window.postUnityMessageToHost = postToHost;
+      // Unity's jslib wraps every ReportToWeb call in a {type:"report", message}
+      // envelope. Structured messages (studioPlacedObjects, etc.) arrive as JSON
+      // strings inside that envelope — unwrap them so the host page sees the real
+      // type instead of showing raw JSON as a popup.
+      window.postUnityMessageToHost = function (payload) {
+        if (payload && payload.type === "report" && typeof payload.message === "string") {
+          try {
+            var parsed = JSON.parse(payload.message);
+            if (parsed && typeof parsed === "object" && parsed.type) {
+              postToHost(parsed);
+              return;
+            }
+          } catch (error) {
+            // Not JSON — fall through and deliver as a plain report popup.
+          }
+        }
+
+        postToHost(payload);
+      };
 
       // Unity (C#) calls window.receiveFromUnity(...) to push data back to the host page.
       window.receiveFromUnity = function (message) {
+        if (typeof message === "string") {
+          try {
+            var parsed = JSON.parse(message);
+            if (parsed && typeof parsed === "object" && parsed.type) {
+              postToHost(parsed);
+              return;
+            }
+          } catch (error) {
+            // Plain Unity reports are shown as host popups.
+          }
+        }
+
         postToHost({ type: "message", payload: message });
       };
 
@@ -136,20 +162,76 @@
           postToHost({ type: "ready" });
         }
 
-        if (data.type === "loadBuilding" && window.unityInstance) {
-          window.unityInstance.SendMessage(UNITY_GAME_OBJECT, UNITY_METHOD, data.floor);
+        if (data.type === "selectBuilding" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "SelectBuilding", data.building);
+        }
+
+        if (data.type === "selectFloor" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "SelectFloor", data.floor);
         }
 
         if (data.type === "changeScene" && window.unityInstance) {
-          window.unityInstance.SendMessage(SCENE_GAME_OBJECT, SCENE_METHOD, data.scene);
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "SwitchMode", data.scene);
+        }
+
+        if (data.type === "switchView" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "SwitchView", data.dimension);
         }
 
         if (data.type === "spawnAsset" && window.unityInstance) {
-          window.unityInstance.SendMessage(STUDIO_GAME_OBJECT, "SpawnAsset", data.objIndex);
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "PlaceAsset", data.objIndex);
         }
 
         if (data.type === "setMode" && window.unityInstance) {
-          window.unityInstance.SendMessage(STUDIO_GAME_OBJECT, "SetMode", String(data.mode));
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "SetMode", Number(data.mode));
+        }
+
+        if (data.type === "requestStudioObjects" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "RequestStudioObjects");
+        }
+
+        if (data.type === "selectStudioObject" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "SelectStudioObject", String(data.id));
+        }
+
+        if (data.type === "focusStudioObject" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "ZoomIn", String(data.id));
+        }
+
+        if (data.type === "toggleStudioObjectLock" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "ToggleStudioObjectLock", String(data.id));
+        }
+
+        if (data.type === "lockStudioObject" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "LockStudioObject", String(data.id));
+        }
+
+        if (data.type === "unlockStudioObject" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "UnlockStudioObject", String(data.id));
+        }
+
+        if (data.type === "rotateStudioSelectedLeft" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "RotateStudioSelectedLeft");
+        }
+
+        if (data.type === "rotateStudioSelectedRight" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "RotateStudioSelectedRight");
+        }
+
+        if (data.type === "duplicateStudioSelected" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "DuplicateStudioSelected");
+        }
+
+        if (data.type === "deleteStudioSelected" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "DeleteStudioSelected");
+        }
+
+        if (data.type === "undoStudioEdit" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "UndoStudioEdit");
+        }
+
+        if (data.type === "redoStudioEdit" && window.unityInstance) {
+          window.unityInstance.SendMessage(WEB_API_GAME_OBJECT, "RedoStudioEdit");
         }
 
         if (data.type === "save" && window.unityInstance) {

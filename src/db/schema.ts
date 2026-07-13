@@ -1,17 +1,22 @@
 import {
+  bigserial,
   boolean,
+  inet,
   integer,
+  jsonb,
   pgTable,
   real,
   serial,
   text,
   timestamp,
+  uuid,
 } from 'drizzle-orm/pg-core'
 
 export const studioAssetCatalog = pgTable('studio_asset_catalog', {
   id: serial().primaryKey(),
   name: text().notNull(),
   objIndex: integer('obj_index').notNull().unique(),
+  category: text(),
 })
 
 export const unityObjects = pgTable('unity_objects', {
@@ -104,4 +109,27 @@ export const verification = pgTable('verification', {
   updatedAt: timestamp('updated_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
+})
+
+export const unityObjectAuditLog = pgTable('unity_object_audit_log', {
+  id: bigserial({ mode: 'number' }).primaryKey(),
+  objectId: integer('object_id').notNull(),
+  actorUserId: text('actor_user_id').references(() => user.id, {
+    onDelete: 'set null',
+  }),
+  actorName: text('actor_name'),
+  actorEmail: text('actor_email'),
+  action: text().notNull(),
+  occurredAt: timestamp('occurred_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  buildingId: text('building_id'),
+  objIndex: integer('obj_index'),
+  beforeState: jsonb('before_state').$type<Record<string, string | number>>(),
+  afterState: jsonb('after_state').$type<Record<string, string | number>>(),
+  changedFields: text('changed_fields').array().notNull(),
+  changeSetId: uuid('change_set_id'),
+  source: text().notNull().default('unity-webgl'),
+  ipAddress: inet('ip_address'),
+  userAgent: text('user_agent'),
 })

@@ -5,10 +5,12 @@ import { unityObjects } from '#/db/schema'
 export async function loadUnityObjects(request: Request) {
   try {
     const url = new URL(request.url)
+    const id = url.searchParams.get('id')
     const category = url.searchParams.get('category')
     const buildingId = url.searchParams.get('buildingId')
     const filters = []
 
+    if (id) filters.push(eq(unityObjects.id, Number.parseInt(id, 10)))
     if (category) filters.push(eq(unityObjects.category, category))
     if (buildingId) filters.push(eq(unityObjects.buildingId, buildingId))
 
