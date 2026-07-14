@@ -148,6 +148,7 @@ function DigitalTwinPage() {
   const objectInfoRequestId = useRef(0)
   const [topbarSlot, setTopbarSlot] = useState<HTMLElement | null>(null)
   const [toolbarSlot, setToolbarSlot] = useState<HTMLElement | null>(null)
+  const [canUseStudio, setCanUseStudio] = useState(true)
 
   useEffect(() => {
     setTopbarSlot(document.getElementById('topbar-mode-switch'))
@@ -158,6 +159,18 @@ function DigitalTwinPage() {
     fetch('/api/unity/assetCatalog.do')
       .then((response) => response.json())
       .then((data) => setStudioAssets(data.rows ?? []))
+      .catch(() => {})
+  }, [])
+
+  // Authority gate: Studio needs a login with a sufficient tier (근무자 and
+  // anonymous visitors are blocked). Defaults to allowed while loading — the
+  // server rejects unauthorized edits regardless.
+  useEffect(() => {
+    fetch('/api/unity/userAuthority')
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result === 'success') setCanUseStudio(data.canUseStudio !== false)
+      })
       .catch(() => {})
   }, [])
 
@@ -313,6 +326,7 @@ function DigitalTwinPage() {
   function changeScene(scene: SceneId) {
     const contentWindow = iframeRef.current?.contentWindow
     if (!unityReady || !contentWindow) return
+    if (scene === 'Studio' && !canUseStudio) return
 
     contentWindow.postMessage({ source: 'dt-host', type: 'changeScene', scene }, '*')
     setActiveScene(scene)
@@ -546,21 +560,25 @@ function DigitalTwinPage() {
               )}
 
               <div className="twin-scene-switch" role="group" aria-label="Scene">
-                {scenes.map((scene) => (
-                  <button
-                    key={scene.id}
-                    type="button"
-                    className={
-                      activeScene === scene.id
-                        ? 'twin-scene-button is-active'
-                        : 'twin-scene-button'
-                    }
-                    disabled={!unityReady}
-                    onClick={() => changeScene(scene.id)}
-                  >
-                    {scene.label}
-                  </button>
-                ))}
+                {scenes.map((scene) => {
+                  const blocked = scene.id === 'Studio' && !canUseStudio
+                  return (
+                    <button
+                      key={scene.id}
+                      type="button"
+                      className={
+                        activeScene === scene.id
+                          ? 'twin-scene-button is-active'
+                          : 'twin-scene-button'
+                      }
+                      disabled={!unityReady || blocked}
+                      title={blocked ? '스튜디오 편집 권한이 없습니다' : undefined}
+                      onClick={() => changeScene(scene.id)}
+                    >
+                      {scene.label}
+                    </button>
+                  )
+                })}
               </div>
 {/* 
               <div className="twin-topbar-divider" aria-hidden="true" />
@@ -615,8 +633,8 @@ function DigitalTwinPage() {
               {visibleStudioObjects.length === 0 ? (
                 <p className="viewer-empty-hint">
                   {studioPlacedObjects.length === 0
-                    ? 'No placed objects to display for this floor.'
-                    : 'No objects match the search.'}
+                    ? '현재 층에 배치된 오브젝트가 없습니다.'
+                    : '검색 조건에 맞는 오브젝트가 없습니다.'}
                 </p>
               ) : (
                 visibleStudioObjects.map((object) => (

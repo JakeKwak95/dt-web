@@ -1,5 +1,24 @@
+import { useEffect } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { Activity, Map, Settings } from 'lucide-react'
+import { authClient } from '#/lib/auth-client'
+
+// Landing with ?ott=<token> (from the dev dashboard or an external portal)
+// exchanges the single-use token for this origin's own session cookie, then
+// reloads with the token stripped so it never lingers in the address bar.
+function consumeOneTimeToken() {
+  const url = new URL(window.location.href)
+  const token = url.searchParams.get('ott')
+  if (!token) return
+
+  url.searchParams.delete('ott')
+  const cleanUrl = url.pathname + url.search + url.hash
+
+  void authClient.oneTimeToken
+    .verify({ token })
+    .catch(() => null)
+    .then(() => window.location.replace(cleanUrl))
+}
 
 const navItems = [
   { to: '/dashboard', label: '대시보드', shortLabel: 'Dash', icon: Activity },
@@ -17,6 +36,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     select: (state) => state.location.pathname,
   })
 
+  useEffect(() => {
+    consumeOneTimeToken()
+  }, [])
+
   if (pathname === '/login' || pathname === '/register') {
     return <>{children}</>
   }
@@ -25,11 +48,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="app-main">
       <header className="topbar">
         <div className="topbar-brand">
-          <img
-            src="/logo.png"
-            alt="Daegu Catholic University Medical Center"
-            style={{ filter: 'brightness(0.5) saturate(100%) invert(100%) hue-rotate(190deg)' }}
-          />
+          <Link to="/dashboard" aria-label="대시보드로 이동">
+            <img
+              src="/logo.png"
+              alt="Daegu Catholic University Medical Center"
+              style={{ filter: 'brightness(0.5) saturate(100%) invert(100%) hue-rotate(190deg)' }}
+            />
+          </Link>
         </div>
 
         <div className="topbar-toolbar" id="topbar-floor-toolbar" />

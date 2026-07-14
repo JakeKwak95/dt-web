@@ -9,6 +9,7 @@ import {
   getChangedUnityObjectFields,
   toUnityObjectAuditState,
 } from '#/server/unity-object-audit'
+import { denyIfActorLacksStudioAccess } from '#/server/user-authority'
 
 type UnityObjectAuditInput = typeof unityObjectAuditLog.$inferInsert
 
@@ -42,6 +43,8 @@ export const Route = createFileRoute('/api/unity/saveObjects.do')({
       POST: async ({ request }) => {
         try {
           const actor = await getAuditActor(request)
+          const denied = await denyIfActorLacksStudioAccess(actor)
+          if (denied) return denied
           const form = await request.formData()
           const payload = readBatchPayloadForm(form)
           const requestMetadata = getAuditRequestMetadata(request)

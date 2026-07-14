@@ -158,6 +158,11 @@ input {
   min-width: 0;
 }
 
+.topbar-brand a {
+  display: flex;
+  align-items: center;
+}
+
 .topbar-brand img {
   display: block;
   height: 64px;

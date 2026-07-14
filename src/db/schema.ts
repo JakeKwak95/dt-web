@@ -1,6 +1,7 @@
 import {
   bigserial,
   boolean,
+  char,
   inet,
   integer,
   jsonb,
@@ -10,7 +11,23 @@ import {
   text,
   timestamp,
   uuid,
+  varchar,
 } from 'drizzle-orm/pg-core'
+
+// Authority tiers (auth_sn: lower = higher rank; 근무자 = 5). Rows are managed
+// directly in the DB for now — this mapping is read-only for the app.
+export const tnAuth = pgTable('tn_auth', {
+  authId: varchar('auth_id', { length: 20 }).primaryKey(),
+  authNm: varchar('auth_nm', { length: 100 }).notNull(),
+  authDc: varchar('auth_dc', { length: 500 }),
+  authSn: integer('auth_sn').notNull().unique(),
+  aprvlYn: char('aprvl_yn', { length: 1 }).notNull(),
+  useYn: char('use_yn', { length: 1 }).notNull(),
+  frstRegisterId: varchar('frst_register_id', { length: 100 }).notNull(),
+  frstRegistDt: timestamp('frst_regist_dt').notNull(),
+  lastUpdusrId: varchar('last_updusr_id', { length: 100 }).notNull(),
+  lastUpdtDt: timestamp('last_updt_dt').notNull(),
+})
 
 export const studioAssetCatalog = pgTable('studio_asset_catalog', {
   id: serial().primaryKey(),
@@ -47,6 +64,8 @@ export const user = pgTable('user', {
   email: text().notNull().unique(),
   emailVerified: boolean('email_verified').notNull().default(false),
   image: text(),
+  // Authority tier; null = unassigned, treated as unrestricted for now.
+  authId: varchar('auth_id', { length: 20 }).references(() => tnAuth.authId),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),

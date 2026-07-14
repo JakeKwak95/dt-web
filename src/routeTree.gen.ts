@@ -21,6 +21,7 @@ import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
 import { Route as DemoBetterAuthRouteImport } from './routes/demo/better-auth'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
 import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
+import { Route as ApiUnityUserAuthorityRouteImport } from './routes/api/unity/userAuthority'
 import { Route as ApiUnitySaveObjectsDotdoRouteImport } from './routes/api/unity/saveObjects[.]do'
 import { Route as ApiUnitySaveObjectDotdoRouteImport } from './routes/api/unity/saveObject[.]do'
 import { Route as ApiUnityLoadObjectsDotdoRouteImport } from './routes/api/unity/loadObjects[.]do'
@@ -89,6 +90,11 @@ const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
 const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
   id: '/demo/form/address',
   path: '/demo/form/address',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUnityUserAuthorityRoute = ApiUnityUserAuthorityRouteImport.update({
+  id: '/api/unity/userAuthority',
+  path: '/api/unity/userAuthority',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiUnitySaveObjectsDotdoRoute =
@@ -161,6 +167,7 @@ export interface FileRoutesByFullPath {
   '/api/unity/loadObjects.do': typeof ApiUnityLoadObjectsDotdoRoute
   '/api/unity/saveObject.do': typeof ApiUnitySaveObjectDotdoRoute
   '/api/unity/saveObjects.do': typeof ApiUnitySaveObjectsDotdoRoute
+  '/api/unity/userAuthority': typeof ApiUnityUserAuthorityRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/api/unity/loadObjects.do': typeof ApiUnityLoadObjectsDotdoRoute
   '/api/unity/saveObject.do': typeof ApiUnitySaveObjectDotdoRoute
   '/api/unity/saveObjects.do': typeof ApiUnitySaveObjectsDotdoRoute
+  '/api/unity/userAuthority': typeof ApiUnityUserAuthorityRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/api/unity/loadObjects.do': typeof ApiUnityLoadObjectsDotdoRoute
   '/api/unity/saveObject.do': typeof ApiUnitySaveObjectDotdoRoute
   '/api/unity/saveObjects.do': typeof ApiUnitySaveObjectsDotdoRoute
+  '/api/unity/userAuthority': typeof ApiUnityUserAuthorityRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
@@ -233,6 +242,7 @@ export interface FileRouteTypes {
     | '/api/unity/loadObjects.do'
     | '/api/unity/saveObject.do'
     | '/api/unity/saveObjects.do'
+    | '/api/unity/userAuthority'
     | '/demo/form/address'
     | '/demo/form/simple'
   fileRoutesByTo: FileRoutesByTo
@@ -256,6 +266,7 @@ export interface FileRouteTypes {
     | '/api/unity/loadObjects.do'
     | '/api/unity/saveObject.do'
     | '/api/unity/saveObjects.do'
+    | '/api/unity/userAuthority'
     | '/demo/form/address'
     | '/demo/form/simple'
   id:
@@ -279,6 +290,7 @@ export interface FileRouteTypes {
     | '/api/unity/loadObjects.do'
     | '/api/unity/saveObject.do'
     | '/api/unity/saveObjects.do'
+    | '/api/unity/userAuthority'
     | '/demo/form/address'
     | '/demo/form/simple'
   fileRoutesById: FileRoutesById
@@ -303,6 +315,7 @@ export interface RootRouteChildren {
   ApiUnityLoadObjectsDotdoRoute: typeof ApiUnityLoadObjectsDotdoRoute
   ApiUnitySaveObjectDotdoRoute: typeof ApiUnitySaveObjectDotdoRoute
   ApiUnitySaveObjectsDotdoRoute: typeof ApiUnitySaveObjectsDotdoRoute
+  ApiUnityUserAuthorityRoute: typeof ApiUnityUserAuthorityRoute
   DemoFormAddressRoute: typeof DemoFormAddressRoute
   DemoFormSimpleRoute: typeof DemoFormSimpleRoute
 }
@@ -393,6 +406,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoFormAddressRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/unity/userAuthority': {
+      id: '/api/unity/userAuthority'
+      path: '/api/unity/userAuthority'
+      fullPath: '/api/unity/userAuthority'
+      preLoaderRoute: typeof ApiUnityUserAuthorityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/unity/saveObjects.do': {
       id: '/api/unity/saveObjects.do'
       path: '/api/unity/saveObjects.do'
@@ -479,6 +499,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiUnityLoadObjectsDotdoRoute: ApiUnityLoadObjectsDotdoRoute,
   ApiUnitySaveObjectDotdoRoute: ApiUnitySaveObjectDotdoRoute,
   ApiUnitySaveObjectsDotdoRoute: ApiUnitySaveObjectsDotdoRoute,
+  ApiUnityUserAuthorityRoute: ApiUnityUserAuthorityRoute,
   DemoFormAddressRoute: DemoFormAddressRoute,
   DemoFormSimpleRoute: DemoFormSimpleRoute,
 }

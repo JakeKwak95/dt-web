@@ -7,6 +7,7 @@ import {
   getAuditRequestMetadata,
   toUnityObjectAuditState,
 } from '#/server/unity-object-audit'
+import { denyIfActorLacksStudioAccess } from '#/server/user-authority'
 
 export const Route = createFileRoute('/api/unity/deleteObject.do')({
   server: {
@@ -14,6 +15,8 @@ export const Route = createFileRoute('/api/unity/deleteObject.do')({
       POST: async ({ request }) => {
         try {
           const actor = await getAuditActor(request)
+          const denied = await denyIfActorLacksStudioAccess(actor)
+          if (denied) return denied
           const form = await request.formData()
           const id = readInt(form, 'id')
           const requestMetadata = getAuditRequestMetadata(request)

@@ -1,16 +1,34 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
   ArrowUpRight,
-  Building2,
   CirclePlus,
-  Database,
+  ExternalLink,
   Pencil,
   RefreshCw,
-  Server,
   Trash2,
-  Wifi,
 } from 'lucide-react'
 import { clearUnityAssetCache } from '#/lib/unityCache'
+import { authClient } from '#/lib/auth-client'
+
+const PRODUCTION_URL = 'https://web-dt.netlify.app/'
+
+// Opens the production site carrying the current login: mints a single-use,
+// short-lived token; AppShell on the other side exchanges it for its own
+// session cookie. Anonymous users (or a failed mint) get a plain open. The
+// window opens synchronously so popup blockers don't eat the async mint.
+async function openProductionWithAuth() {
+  const target = window.open('about:blank', '_blank', 'noopener')
+
+  try {
+    const { data } = await authClient.oneTimeToken.generate()
+    const url = data?.token
+      ? `${PRODUCTION_URL}?ott=${encodeURIComponent(data.token)}`
+      : PRODUCTION_URL
+    if (target) target.location.href = url
+  } catch {
+    if (target) target.location.href = PRODUCTION_URL
+  }
+}
 
 type CacheStatus = 'idle' | 'clearing' | 'done'
 
@@ -29,32 +47,26 @@ interface DashboardStats {
 function buildMetrics(stats: DashboardStats | null) {
   return [
     {
-      label: 'Placed objects',
+      label: '배치된 오브젝트',
       value: stats ? String(stats.placedObjects) : '—',
-      detail: stats
-        ? `Across ${stats.buildings} building floor${stats.buildings === 1 ? '' : 's'}`
-        : 'Loading…',
+      detail: stats ? `${stats.buildings}개 층에 배치됨` : '불러오는 중…',
     },
     {
-      label: 'Changes (7 days)',
+      label: '변경 (최근 7일)',
       value: stats ? String(stats.weekChanges) : '—',
       detail: stats?.lastChangeAt
-        ? `Last: ${new Date(stats.lastChangeAt).toLocaleString()}`
-        : 'No changes recorded yet',
+        ? `마지막 변경: ${new Date(stats.lastChangeAt).toLocaleString()}`
+        : '기록된 변경 없음',
     },
     {
-      label: 'Asset catalog',
+      label: '에셋 카탈로그',
       value: stats ? String(stats.catalogAssets) : '—',
-      detail: stats
-        ? `${stats.catalogCategories} categor${stats.catalogCategories === 1 ? 'y' : 'ies'}`
-        : 'Loading…',
+      detail: stats ? `카테고리 ${stats.catalogCategories}개` : '불러오는 중…',
     },
     {
-      label: 'Active editors (7 days)',
+      label: '활성 편집자 (최근 7일)',
       value: stats ? String(stats.weekEditors) : '—',
-      detail: stats
-        ? `${stats.registeredUsers} registered user${stats.registeredUsers === 1 ? '' : 's'}`
-        : 'Loading…',
+      detail: stats ? `가입 사용자 ${stats.registeredUsers}명` : '불러오는 중…',
     },
   ]
 }
@@ -77,9 +89,9 @@ interface ChangeLogRow {
 }
 
 const actionPresentation = {
-  create: { label: 'Placed', Icon: CirclePlus, className: 'event-icon--create' },
-  update: { label: 'Updated', Icon: Pencil, className: 'event-icon--update' },
-  delete: { label: 'Deleted', Icon: Trash2, className: 'event-icon--delete' },
+  create: { label: '배치', Icon: CirclePlus, className: 'event-icon--create' },
+  update: { label: '수정', Icon: Pencil, className: 'event-icon--update' },
+  delete: { label: '삭제', Icon: Trash2, className: 'event-icon--delete' },
 } as const
 
 function getActionPresentation(action: string) {
@@ -89,8 +101,8 @@ function getActionPresentation(action: string) {
 }
 
 function describeChangeLogRow(row: ChangeLogRow) {
-  const objectLabel = `${row.typeName ?? `Asset ${row.objIndex ?? '?'}`} #${row.objectId}`
-  const actor = row.actorName ?? row.actorEmail ?? 'Unity viewer'
+  const objectLabel = `${row.typeName ?? `에셋 ${row.objIndex ?? '?'}`} #${row.objectId}`
+  const actor = row.actorName ?? row.actorEmail ?? 'Unity 뷰어'
   const details = [
     row.buildingId,
     actor,
@@ -137,12 +149,20 @@ export default function DashboardOverview() {
         </div>
         <div className="hero-actions">
           <a className="primary-action" href="/digital-twin">
-            Open viewer
+            뷰어 열기
             <ArrowUpRight size={16} />
           </a>
           <a className="secondary-action" href="/settings">
-            Configure
+            설정
           </a>
+          <button
+            type="button"
+            className="secondary-action"
+            onClick={() => void openProductionWithAuth()}
+          >
+            <ExternalLink size={16} />
+            운영 사이트
+          </button>
           <button
             type="button"
             className="secondary-action"
@@ -151,15 +171,15 @@ export default function DashboardOverview() {
           >
             <RefreshCw size={16} />
             {cacheStatus === 'clearing'
-              ? 'Clearing…'
+              ? '삭제 중…'
               : cacheStatus === 'done'
-                ? 'Cache cleared'
-                : 'Clear viewer cache'}
+                ? '캐시 삭제됨'
+                : '뷰어 캐시 삭제'}
           </button>
         </div>
       </section>
 
-      <section className="metric-grid" aria-label="Project metrics">
+      <section className="metric-grid" aria-label="프로젝트 지표">
         {metrics.map((metric) => (
           <article className="metric-card" key={metric.label}>
             <span>{metric.label}</span>
@@ -173,17 +193,17 @@ export default function DashboardOverview() {
         <article className="viewer-preview panel">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Digital twin</p>
-              <h3>Unity WebGL viewport</h3>
+              <p className="eyebrow">디지털 트윈</p>
+              <h3>Unity WebGL 뷰포트</h3>
             </div>
-            <span className="pill">Placeholder</span>
+            <span className="pill">예시 화면</span>
           </div>
           <div className="viewport-box">
             <div className="floor-plate">
-              <span className="room room-a">1F Lobby</span>
-              <span className="room room-b">Ward A</span>
-              <span className="room room-c">Utility</span>
-              <span className="room room-d">ER</span>
+              <span className="room room-a">1층 로비</span>
+              <span className="room room-b">병동 A</span>
+              <span className="room room-c">설비실</span>
+              <span className="room room-d">응급실</span>
             </div>
           </div>
         </article>
@@ -197,10 +217,10 @@ export default function DashboardOverview() {
 type ActionFilter = 'all' | 'create' | 'update' | 'delete'
 
 const actionFilters = [
-  { id: 'all', label: 'All' },
-  { id: 'create', label: 'Placed' },
-  { id: 'update', label: 'Updated' },
-  { id: 'delete', label: 'Deleted' },
+  { id: 'all', label: '전체' },
+  { id: 'create', label: '배치' },
+  { id: 'update', label: '수정' },
+  { id: 'delete', label: '삭제' },
 ] as const satisfies ReadonlyArray<{ id: ActionFilter; label: string }>
 
 function ChangeLogPanel() {
@@ -229,20 +249,20 @@ function ChangeLogPanel() {
     <article className="panel activity-panel">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Activity</p>
-          <h3>Change log</h3>
+          <p className="eyebrow">활동</p>
+          <h3>변경 이력</h3>
         </div>
         <button
           type="button"
           className="secondary-action"
-          aria-label="Refresh change log"
+          aria-label="변경 이력 새로고침"
           disabled={status === 'loading'}
           onClick={() => loadChangeLog(filter)}
         >
           <RefreshCw size={15} />
         </button>
       </div>
-      <div className="event-filters" role="group" aria-label="Filter change log">
+      <div className="event-filters" role="group" aria-label="변경 이력 필터">
         {actionFilters.map((option) => (
           <button
             key={option.id}
@@ -256,13 +276,13 @@ function ChangeLogPanel() {
       </div>
       <div className="event-list">
         {status === 'error' && (
-          <p className="viewer-empty-hint">Failed to load the change log.</p>
+          <p className="viewer-empty-hint">변경 이력을 불러오지 못했습니다.</p>
         )}
         {status === 'ready' && rows.length === 0 && (
           <p className="viewer-empty-hint">
             {filter === 'all'
-              ? 'No object changes recorded yet.'
-              : 'No changes match this filter.'}
+              ? '기록된 오브젝트 변경이 없습니다.'
+              : '필터에 해당하는 변경이 없습니다.'}
           </p>
         )}
         {rows.map((row) => {
@@ -286,24 +306,6 @@ function ChangeLogPanel() {
         })}
       </div>
     </article>
-  )
-}
-
-function SetupItem({
-  icon: Icon,
-  label,
-  status,
-}: {
-  icon: React.ComponentType<{ size?: number }>
-  label: string
-  status: string
-}) {
-  return (
-    <div className="setup-item">
-      <Icon size={18} />
-      <span>{label}</span>
-      <strong>{status}</strong>
-    </div>
   )
 }
 
