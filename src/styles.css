@@ -177,6 +177,33 @@ input {
   gap: 10px;
 }
 
+/* Portal target for page-specific topbar controls (scene switch etc.). */
+.topbar-actions-slot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-actions-slot:empty {
+  display: none;
+}
+
+.topbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-auth-name {
+  max-width: 160px;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .topbar button,
 .secondary-action,
 .primary-action {

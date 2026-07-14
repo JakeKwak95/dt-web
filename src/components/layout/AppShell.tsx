@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
-import { Activity, Map, Settings } from 'lucide-react'
+import { Activity, LogIn, Map, Settings } from 'lucide-react'
 import { authClient } from '#/lib/auth-client'
 
 // Landing with ?ott=<token> (from the dev dashboard or an external portal)
@@ -31,6 +31,39 @@ const navItems = [
   { to: '/settings', label: '설정', shortLabel: 'Settings', icon: Settings },
 ] as const
 
+// Editing requires a login since the anonymous block — the topbar has to show
+// whether you are logged in and offer the way in/out.
+function TopbarAuth() {
+  const { data: session, isPending } = authClient.useSession()
+
+  if (isPending) return null
+
+  if (session?.user) {
+    return (
+      <div className="topbar-auth">
+        <span className="topbar-auth-name">{session.user.name}</span>
+        <button
+          type="button"
+          className="secondary-action"
+          onClick={() => {
+            // Reload so per-page authority gates re-evaluate.
+            void authClient.signOut().then(() => window.location.reload())
+          }}
+        >
+          로그아웃
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <Link to="/login" className="secondary-action">
+      <LogIn size={15} />
+      로그인
+    </Link>
+  )
+}
+
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
@@ -59,7 +92,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="topbar-toolbar" id="topbar-floor-toolbar" />
 
-        <div className="topbar-actions" id="topbar-mode-switch" />
+        <div className="topbar-actions">
+          <div className="topbar-actions-slot" id="topbar-mode-switch" />
+          <TopbarAuth />
+        </div>
       </header>
 
       <main className="content-area">{children}</main>

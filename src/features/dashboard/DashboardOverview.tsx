@@ -17,17 +17,22 @@ const PRODUCTION_URL = 'https://web-dt.netlify.app/'
 // session cookie. Anonymous users (or a failed mint) get a plain open. The
 // window opens synchronously so popup blockers don't eat the async mint.
 async function openProductionWithAuth() {
-  const target = window.open('about:blank', '_blank', 'noopener')
+  // Not the 'noopener' feature string: that makes window.open return null,
+  // and we need the handle to point the tab once the token arrives. Sever
+  // the opener manually instead.
+  const target = window.open('about:blank', '_blank')
+  if (target) target.opener = null
 
+  let url = PRODUCTION_URL
   try {
     const { data } = await authClient.oneTimeToken.generate()
-    const url = data?.token
-      ? `${PRODUCTION_URL}?ott=${encodeURIComponent(data.token)}`
-      : PRODUCTION_URL
-    if (target) target.location.href = url
+    if (data?.token) url = `${PRODUCTION_URL}?ott=${encodeURIComponent(data.token)}`
   } catch {
-    if (target) target.location.href = PRODUCTION_URL
+    // fall through with the plain URL
   }
+
+  if (target) target.location.href = url
+  else window.open(url, '_blank')
 }
 
 type CacheStatus = 'idle' | 'clearing' | 'done'
