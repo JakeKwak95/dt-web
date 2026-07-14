@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { Activity, LogIn, Map, Settings } from 'lucide-react'
 import { authClient } from '#/lib/auth-client'
@@ -32,9 +32,27 @@ const navItems = [
 ] as const
 
 // Editing requires a login since the anonymous block — the topbar has to show
-// whether you are logged in and offer the way in/out.
+// whether you are logged in, which authority tier you hold, and the way in/out.
 function TopbarAuth() {
   const { data: session, isPending } = authClient.useSession()
+  const [authorityName, setAuthorityName] = useState<string | null>(null)
+
+  const userId = session?.user.id
+  useEffect(() => {
+    if (!userId) {
+      setAuthorityName(null)
+      return
+    }
+
+    fetch('/api/unity/userAuthority')
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result === 'success') {
+          setAuthorityName(data.authority?.authNm ?? null)
+        }
+      })
+      .catch(() => {})
+  }, [userId])
 
   if (isPending) return null
 
@@ -42,6 +60,7 @@ function TopbarAuth() {
     return (
       <div className="topbar-auth">
         <span className="topbar-auth-name">{session.user.name}</span>
+        <span className="pill">{authorityName ?? '권한 미지정'}</span>
         <button
           type="button"
           className="secondary-action"
