@@ -7,6 +7,7 @@ import {
   MousePointer2,
   Redo2,
   RefreshCw,
+  Trash2,
   Undo2,
   Unlock,
 } from 'lucide-react'
@@ -72,6 +73,15 @@ interface StudioPlacedObject {
   typeName: string
   buildingId?: string
   isLocked: boolean
+  posX: number
+  posY: number
+  posZ: number
+  rotX: number
+  rotY: number
+  rotZ: number
+  scaleX: number
+  scaleY: number
+  scaleZ: number
 }
 
 // Row shape returned by /api/unity/loadObject.do (unity_objects table). The
@@ -93,6 +103,22 @@ interface UnityObjectRow {
   scaleZ?: number
   createdAt?: string
   updatedAt?: string
+}
+
+// Transform fields Unity reports live. These override the saved DB row so the
+// properties panel tracks staged (unsaved) edits while in Studio.
+function liveTransform(placed: StudioPlacedObject) {
+  return {
+    posX: placed.posX,
+    posY: placed.posY,
+    posZ: placed.posZ,
+    rotX: placed.rotX,
+    rotY: placed.rotY,
+    rotZ: placed.rotZ,
+    scaleX: placed.scaleX,
+    scaleY: placed.scaleY,
+    scaleZ: placed.scaleZ,
+  }
 }
 
 function DigitalTwinPage() {
@@ -149,6 +175,7 @@ function DigitalTwinPage() {
       id: placed.id,
       objIndex: placed.objIndex,
       buildingId: placed.buildingId ?? '-',
+      ...liveTransform(placed),
     }
   }
 
@@ -167,7 +194,9 @@ function DigitalTwinPage() {
       .then((response) => response.json())
       .then((data) => {
         if (requestId !== objectInfoRequestId.current) return
-        setSelectedObjectInfo(data.rows?.[0] ?? buildFallbackObjectInfo(selectedId))
+        const liveObject = buildFallbackObjectInfo(selectedId)
+        const savedObject = data.rows?.[0]
+        setSelectedObjectInfo(savedObject && liveObject ? { ...savedObject, ...liveObject } : savedObject ?? liveObject)
       })
       .catch(() => {
         if (requestId !== objectInfoRequestId.current) return
@@ -214,6 +243,15 @@ function DigitalTwinPage() {
         studioPlacedObjectsRef.current = data.objects
         setStudioPlacedObjects(data.objects)
         setSelectedStudioObjectId(typeof data.selectedId === 'number' && data.selectedId > 0 ? data.selectedId : null)
+        // Unity re-reports after transform edits — keep an open properties
+        // panel tracking the live values instead of what it loaded initially.
+        setSelectedObjectInfo((prev) => {
+          if (!prev) return prev
+          const live = (data.objects as StudioPlacedObject[]).find(
+            (object) => object.id === prev.id,
+          )
+          return live ? { ...prev, ...liveTransform(live) } : prev
+        })
       }
 
       if (data.type === 'studioPlacedObjectSelected' && typeof data.selectedId === 'number') {
@@ -370,6 +408,13 @@ function DigitalTwinPage() {
     loadSelectedObjectInfo(id)
     sendStudioCommand('selectStudioObject', { id })
     sendStudioCommand('focusStudioObject', { id })
+  }
+
+  // Unity deletes whatever is selected, so re-select by id first in case its
+  // selection drifted from the object the properties panel is showing.
+  function deleteSelectedObject(id: number) {
+    sendStudioCommand('selectStudioObject', { id })
+    sendStudioCommand('deleteStudioSelected')
   }
 
   // The tabs double as the Studio mode switch: 라이브러리 places, 배치됨 selects.
@@ -692,6 +737,17 @@ function DigitalTwinPage() {
                     </strong>
                   </div>
                 )}
+              {selectedObjectInfo.scaleX != null &&
+                selectedObjectInfo.scaleY != null &&
+                selectedObjectInfo.scaleZ != null && (
+                  <div className="info-row">
+                    <span>Scale</span>
+                    <strong>
+                      {selectedObjectInfo.scaleX.toFixed(2)}, {selectedObjectInfo.scaleY.toFixed(2)},{' '}
+                      {selectedObjectInfo.scaleZ.toFixed(2)}
+                    </strong>
+                  </div>
+                )}
               <div className="info-row">
                 <span>Updated</span>
                 <strong>
@@ -701,6 +757,27 @@ function DigitalTwinPage() {
                 </strong>
               </div>
             </div>
+
+            {activeScene === 'Studio' &&
+              (() => {
+                const placed = studioPlacedObjects.find(
+                  (object) => object.id === selectedObjectInfo.id,
+                )
+                if (!placed) return null
+
+                return (
+                  <button
+                    type="button"
+                    className="twin-object-delete"
+                    disabled={!unityReady || placed.isLocked}
+                    title={placed.isLocked ? '잠금 해제 후 삭제할 수 있습니다' : undefined}
+                    onClick={() => deleteSelectedObject(placed.id)}
+                  >
+                    <Trash2 size={15} />
+                    삭제
+                  </button>
+                )
+              })()}
           </aside>
         )}
 
