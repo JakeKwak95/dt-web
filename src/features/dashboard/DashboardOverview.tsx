@@ -8,31 +8,13 @@ import {
   Trash2,
 } from 'lucide-react'
 import { clearUnityAssetCache } from '#/lib/unityCache'
-import { authClient } from '#/lib/auth-client'
 
-const PRODUCTION_URL = 'https://web-dt.netlify.app/'
+const PRODUCTION_URL = '/dt/dt3dView.do'
 
-// Opens the production site carrying the current login: mints a single-use,
-// short-lived token; AppShell on the other side exchanges it for its own
-// session cookie. Anonymous users (or a failed mint) get a plain open. The
-// window opens synchronously so popup blockers don't eat the async mint.
-async function openProductionWithAuth() {
-  // Not the 'noopener' feature string: that makes window.open return null,
-  // and we need the handle to point the tab once the token arrives. Sever
-  // the opener manually instead.
-  const target = window.open('about:blank', '_blank')
-  if (target) target.opener = null
-
-  let url = PRODUCTION_URL
-  try {
-    const { data } = await authClient.oneTimeToken.generate()
-    if (data?.token) url = `${PRODUCTION_URL}?ott=${encodeURIComponent(data.token)}`
-  } catch {
-    // fall through with the plain URL
-  }
-
-  if (target) target.location.href = url
-  else window.open(url, '_blank')
+// The viewer is now same-origin with DTSSS, so the existing JSESSIONID is
+// carried automatically and no cross-site one-time token is needed.
+function openProductionWithAuth() {
+  window.open(PRODUCTION_URL, '_blank', 'noopener,noreferrer')
 }
 
 type CacheStatus = 'idle' | 'clearing' | 'done'
@@ -313,4 +295,3 @@ function ChangeLogPanel() {
     </article>
   )
 }
-

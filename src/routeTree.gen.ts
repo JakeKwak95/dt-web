@@ -17,20 +17,8 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoDrizzleRouteImport } from './routes/demo/drizzle'
-import { Route as DemoBetterAuthRouteImport } from './routes/demo/better-auth'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
 import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
-import { Route as ApiUnityUserAuthorityRouteImport } from './routes/api/unity/userAuthority'
-import { Route as ApiUnitySaveObjectsDotdoRouteImport } from './routes/api/unity/saveObjects[.]do'
-import { Route as ApiUnitySaveObjectDotdoRouteImport } from './routes/api/unity/saveObject[.]do'
-import { Route as ApiUnityLoadObjectsDotdoRouteImport } from './routes/api/unity/loadObjects[.]do'
-import { Route as ApiUnityLoadObjectDotdoRouteImport } from './routes/api/unity/loadObject[.]do'
-import { Route as ApiUnityDeleteObjectDotdoRouteImport } from './routes/api/unity/deleteObject[.]do'
-import { Route as ApiUnityDashboardStatsRouteImport } from './routes/api/unity/dashboardStats'
-import { Route as ApiUnityChangeLogRouteImport } from './routes/api/unity/changeLog'
-import { Route as ApiUnityAssetCatalogDotdoRouteImport } from './routes/api/unity/assetCatalog[.]do'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -72,16 +60,6 @@ const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   path: '/demo/tanstack-query',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoDrizzleRoute = DemoDrizzleRouteImport.update({
-  id: '/demo/drizzle',
-  path: '/demo/drizzle',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoBetterAuthRoute = DemoBetterAuthRouteImport.update({
-  id: '/demo/better-auth',
-  path: '/demo/better-auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
   id: '/demo/form/simple',
   path: '/demo/form/simple',
@@ -90,60 +68,6 @@ const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
 const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
   id: '/demo/form/address',
   path: '/demo/form/address',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiUnityUserAuthorityRoute = ApiUnityUserAuthorityRouteImport.update({
-  id: '/api/unity/userAuthority',
-  path: '/api/unity/userAuthority',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiUnitySaveObjectsDotdoRoute =
-  ApiUnitySaveObjectsDotdoRouteImport.update({
-    id: '/api/unity/saveObjects.do',
-    path: '/api/unity/saveObjects.do',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiUnitySaveObjectDotdoRoute = ApiUnitySaveObjectDotdoRouteImport.update({
-  id: '/api/unity/saveObject.do',
-  path: '/api/unity/saveObject.do',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiUnityLoadObjectsDotdoRoute =
-  ApiUnityLoadObjectsDotdoRouteImport.update({
-    id: '/api/unity/loadObjects.do',
-    path: '/api/unity/loadObjects.do',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiUnityLoadObjectDotdoRoute = ApiUnityLoadObjectDotdoRouteImport.update({
-  id: '/api/unity/loadObject.do',
-  path: '/api/unity/loadObject.do',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiUnityDeleteObjectDotdoRoute =
-  ApiUnityDeleteObjectDotdoRouteImport.update({
-    id: '/api/unity/deleteObject.do',
-    path: '/api/unity/deleteObject.do',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiUnityDashboardStatsRoute = ApiUnityDashboardStatsRouteImport.update({
-  id: '/api/unity/dashboardStats',
-  path: '/api/unity/dashboardStats',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiUnityChangeLogRoute = ApiUnityChangeLogRouteImport.update({
-  id: '/api/unity/changeLog',
-  path: '/api/unity/changeLog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiUnityAssetCatalogDotdoRoute =
-  ApiUnityAssetCatalogDotdoRouteImport.update({
-    id: '/api/unity/assetCatalog.do',
-    path: '/api/unity/assetCatalog.do',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -155,19 +79,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
-  '/demo/better-auth': typeof DemoBetterAuthRoute
-  '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/unity/assetCatalog.do': typeof ApiUnityAssetCatalogDotdoRoute
-  '/api/unity/changeLog': typeof ApiUnityChangeLogRoute
-  '/api/unity/dashboardStats': typeof ApiUnityDashboardStatsRoute
-  '/api/unity/deleteObject.do': typeof ApiUnityDeleteObjectDotdoRoute
-  '/api/unity/loadObject.do': typeof ApiUnityLoadObjectDotdoRoute
-  '/api/unity/loadObjects.do': typeof ApiUnityLoadObjectsDotdoRoute
-  '/api/unity/saveObject.do': typeof ApiUnitySaveObjectDotdoRoute
-  '/api/unity/saveObjects.do': typeof ApiUnitySaveObjectsDotdoRoute
-  '/api/unity/userAuthority': typeof ApiUnityUserAuthorityRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
@@ -179,19 +91,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
-  '/demo/better-auth': typeof DemoBetterAuthRoute
-  '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/unity/assetCatalog.do': typeof ApiUnityAssetCatalogDotdoRoute
-  '/api/unity/changeLog': typeof ApiUnityChangeLogRoute
-  '/api/unity/dashboardStats': typeof ApiUnityDashboardStatsRoute
-  '/api/unity/deleteObject.do': typeof ApiUnityDeleteObjectDotdoRoute
-  '/api/unity/loadObject.do': typeof ApiUnityLoadObjectDotdoRoute
-  '/api/unity/loadObjects.do': typeof ApiUnityLoadObjectsDotdoRoute
-  '/api/unity/saveObject.do': typeof ApiUnitySaveObjectDotdoRoute
-  '/api/unity/saveObjects.do': typeof ApiUnitySaveObjectsDotdoRoute
-  '/api/unity/userAuthority': typeof ApiUnityUserAuthorityRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
@@ -204,19 +104,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/settings': typeof SettingsRoute
-  '/demo/better-auth': typeof DemoBetterAuthRoute
-  '/demo/drizzle': typeof DemoDrizzleRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/unity/assetCatalog.do': typeof ApiUnityAssetCatalogDotdoRoute
-  '/api/unity/changeLog': typeof ApiUnityChangeLogRoute
-  '/api/unity/dashboardStats': typeof ApiUnityDashboardStatsRoute
-  '/api/unity/deleteObject.do': typeof ApiUnityDeleteObjectDotdoRoute
-  '/api/unity/loadObject.do': typeof ApiUnityLoadObjectDotdoRoute
-  '/api/unity/loadObjects.do': typeof ApiUnityLoadObjectsDotdoRoute
-  '/api/unity/saveObject.do': typeof ApiUnitySaveObjectDotdoRoute
-  '/api/unity/saveObjects.do': typeof ApiUnitySaveObjectsDotdoRoute
-  '/api/unity/userAuthority': typeof ApiUnityUserAuthorityRoute
   '/demo/form/address': typeof DemoFormAddressRoute
   '/demo/form/simple': typeof DemoFormSimpleRoute
 }
@@ -230,19 +118,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/settings'
-    | '/demo/better-auth'
-    | '/demo/drizzle'
     | '/demo/tanstack-query'
-    | '/api/auth/$'
-    | '/api/unity/assetCatalog.do'
-    | '/api/unity/changeLog'
-    | '/api/unity/dashboardStats'
-    | '/api/unity/deleteObject.do'
-    | '/api/unity/loadObject.do'
-    | '/api/unity/loadObjects.do'
-    | '/api/unity/saveObject.do'
-    | '/api/unity/saveObjects.do'
-    | '/api/unity/userAuthority'
     | '/demo/form/address'
     | '/demo/form/simple'
   fileRoutesByTo: FileRoutesByTo
@@ -254,19 +130,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/settings'
-    | '/demo/better-auth'
-    | '/demo/drizzle'
     | '/demo/tanstack-query'
-    | '/api/auth/$'
-    | '/api/unity/assetCatalog.do'
-    | '/api/unity/changeLog'
-    | '/api/unity/dashboardStats'
-    | '/api/unity/deleteObject.do'
-    | '/api/unity/loadObject.do'
-    | '/api/unity/loadObjects.do'
-    | '/api/unity/saveObject.do'
-    | '/api/unity/saveObjects.do'
-    | '/api/unity/userAuthority'
     | '/demo/form/address'
     | '/demo/form/simple'
   id:
@@ -278,19 +142,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/settings'
-    | '/demo/better-auth'
-    | '/demo/drizzle'
     | '/demo/tanstack-query'
-    | '/api/auth/$'
-    | '/api/unity/assetCatalog.do'
-    | '/api/unity/changeLog'
-    | '/api/unity/dashboardStats'
-    | '/api/unity/deleteObject.do'
-    | '/api/unity/loadObject.do'
-    | '/api/unity/loadObjects.do'
-    | '/api/unity/saveObject.do'
-    | '/api/unity/saveObjects.do'
-    | '/api/unity/userAuthority'
     | '/demo/form/address'
     | '/demo/form/simple'
   fileRoutesById: FileRoutesById
@@ -303,19 +155,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   SettingsRoute: typeof SettingsRoute
-  DemoBetterAuthRoute: typeof DemoBetterAuthRoute
-  DemoDrizzleRoute: typeof DemoDrizzleRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  ApiUnityAssetCatalogDotdoRoute: typeof ApiUnityAssetCatalogDotdoRoute
-  ApiUnityChangeLogRoute: typeof ApiUnityChangeLogRoute
-  ApiUnityDashboardStatsRoute: typeof ApiUnityDashboardStatsRoute
-  ApiUnityDeleteObjectDotdoRoute: typeof ApiUnityDeleteObjectDotdoRoute
-  ApiUnityLoadObjectDotdoRoute: typeof ApiUnityLoadObjectDotdoRoute
-  ApiUnityLoadObjectsDotdoRoute: typeof ApiUnityLoadObjectsDotdoRoute
-  ApiUnitySaveObjectDotdoRoute: typeof ApiUnitySaveObjectDotdoRoute
-  ApiUnitySaveObjectsDotdoRoute: typeof ApiUnitySaveObjectsDotdoRoute
-  ApiUnityUserAuthorityRoute: typeof ApiUnityUserAuthorityRoute
   DemoFormAddressRoute: typeof DemoFormAddressRoute
   DemoFormSimpleRoute: typeof DemoFormSimpleRoute
 }
@@ -378,20 +218,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoTanstackQueryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/drizzle': {
-      id: '/demo/drizzle'
-      path: '/demo/drizzle'
-      fullPath: '/demo/drizzle'
-      preLoaderRoute: typeof DemoDrizzleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/better-auth': {
-      id: '/demo/better-auth'
-      path: '/demo/better-auth'
-      fullPath: '/demo/better-auth'
-      preLoaderRoute: typeof DemoBetterAuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/demo/form/simple': {
       id: '/demo/form/simple'
       path: '/demo/form/simple'
@@ -406,76 +232,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoFormAddressRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/unity/userAuthority': {
-      id: '/api/unity/userAuthority'
-      path: '/api/unity/userAuthority'
-      fullPath: '/api/unity/userAuthority'
-      preLoaderRoute: typeof ApiUnityUserAuthorityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/unity/saveObjects.do': {
-      id: '/api/unity/saveObjects.do'
-      path: '/api/unity/saveObjects.do'
-      fullPath: '/api/unity/saveObjects.do'
-      preLoaderRoute: typeof ApiUnitySaveObjectsDotdoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/unity/saveObject.do': {
-      id: '/api/unity/saveObject.do'
-      path: '/api/unity/saveObject.do'
-      fullPath: '/api/unity/saveObject.do'
-      preLoaderRoute: typeof ApiUnitySaveObjectDotdoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/unity/loadObjects.do': {
-      id: '/api/unity/loadObjects.do'
-      path: '/api/unity/loadObjects.do'
-      fullPath: '/api/unity/loadObjects.do'
-      preLoaderRoute: typeof ApiUnityLoadObjectsDotdoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/unity/loadObject.do': {
-      id: '/api/unity/loadObject.do'
-      path: '/api/unity/loadObject.do'
-      fullPath: '/api/unity/loadObject.do'
-      preLoaderRoute: typeof ApiUnityLoadObjectDotdoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/unity/deleteObject.do': {
-      id: '/api/unity/deleteObject.do'
-      path: '/api/unity/deleteObject.do'
-      fullPath: '/api/unity/deleteObject.do'
-      preLoaderRoute: typeof ApiUnityDeleteObjectDotdoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/unity/dashboardStats': {
-      id: '/api/unity/dashboardStats'
-      path: '/api/unity/dashboardStats'
-      fullPath: '/api/unity/dashboardStats'
-      preLoaderRoute: typeof ApiUnityDashboardStatsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/unity/changeLog': {
-      id: '/api/unity/changeLog'
-      path: '/api/unity/changeLog'
-      fullPath: '/api/unity/changeLog'
-      preLoaderRoute: typeof ApiUnityChangeLogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/unity/assetCatalog.do': {
-      id: '/api/unity/assetCatalog.do'
-      path: '/api/unity/assetCatalog.do'
-      fullPath: '/api/unity/assetCatalog.do'
-      preLoaderRoute: typeof ApiUnityAssetCatalogDotdoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -487,19 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   SettingsRoute: SettingsRoute,
-  DemoBetterAuthRoute: DemoBetterAuthRoute,
-  DemoDrizzleRoute: DemoDrizzleRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-  ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiUnityAssetCatalogDotdoRoute: ApiUnityAssetCatalogDotdoRoute,
-  ApiUnityChangeLogRoute: ApiUnityChangeLogRoute,
-  ApiUnityDashboardStatsRoute: ApiUnityDashboardStatsRoute,
-  ApiUnityDeleteObjectDotdoRoute: ApiUnityDeleteObjectDotdoRoute,
-  ApiUnityLoadObjectDotdoRoute: ApiUnityLoadObjectDotdoRoute,
-  ApiUnityLoadObjectsDotdoRoute: ApiUnityLoadObjectsDotdoRoute,
-  ApiUnitySaveObjectDotdoRoute: ApiUnitySaveObjectDotdoRoute,
-  ApiUnitySaveObjectsDotdoRoute: ApiUnitySaveObjectsDotdoRoute,
-  ApiUnityUserAuthorityRoute: ApiUnityUserAuthorityRoute,
   DemoFormAddressRoute: DemoFormAddressRoute,
   DemoFormSimpleRoute: DemoFormSimpleRoute,
 }
